@@ -56,8 +56,8 @@ function setMap(){
 
 
 	var projection = d3.geo.albers()
-	   .center([0, 43.076])
-	   .rotate([89.4])
+	   .center([0, 43.0736])
+	   .rotate([89.3988])
 	   .parallels([50, 60])
    	   .scale(1800000)
  	   .translate([width / 2, height / 2])
