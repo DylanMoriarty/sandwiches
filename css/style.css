@@ -1,0 +1,26 @@
+#info{
+	position: absolute;
+}
+
+#chart{
+	position: absolute;
+	top: 8px;
+}
+
+#map{
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	background-color: black;
+}
+
+.water{
+	fill:#85cfdd;
+}
+
+.buildings{
+	fill: #dedede;
+}
+
+.shops{
+}
