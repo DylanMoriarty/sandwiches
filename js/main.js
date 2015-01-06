@@ -48,7 +48,8 @@ function setMap(){
 		map.insert("path", ".madshops")
 			.datum(topojson.feature(shops, shops.objects.collection.geometries[i]))
 			.attr("class", "shops")
-			.attr("d", path.pointRadius([2]));
+			.attr("d", path.pointRadius([2]))
+			.append("g");
 		};
 
 		GenerateVonoroi(shops)
@@ -74,13 +75,15 @@ function GenerateVonoroi(shops){
 	var ShopData = shops.objects.collection.geometries
 	var vertices = []
 
+//------------------------------------------
+
 	for (var i=0; i<ShopData.length; i++){
 		vertices[i] = ShopData[i].coordinates
 	};
 
-d3.selectAll(".shops").each(function(d, i){
-    console.log( d3.select(this).attr(""))
-  });
+// d3.selectAll(".shops").each(function(d, i){
+//     console.log( d3.select(this).attr("x"))
+//   });
 
 
 	var paths, points, clips;
@@ -89,39 +92,42 @@ d3.selectAll(".shops").each(function(d, i){
 	points = map.append("svg:g").attr("id", "points");
 	paths = map.append("svg:g").attr("id", "point-paths");		
 
-	// clips.selectAll("clipPath")
-	// 	.data(vertices)
-	// 	.enter()
-	// 	.append("svg:clipPath")
-	// 	.attr("id", function(d, i){return "clip-"+i;})
-	// 	.append("svg:circle")
-	// 	.attr('cx', function(d){return d[0];})
-	// 	.attr('cy', function(d){return d[1];})
-	// 	.attr('r', 900);
 
- //  paths.selectAll("path")
- //      .data(d3.geom.voronoi(vertices))
- //    .enter().append("svg:path")
- //      .attr("d", function(d) { return "M" + d.join(",") + "Z"; })
- //      .attr("id", function(d,i) { 
- //        return "path-"+i; })
- //      .attr("clip-path", function(d,i) { return "url(#clip-"+i+")"; })
- //      .style("fill", d3.rgb(230, 230, 230))
- //      .style('fill-opacity', 0.4)
- //      .style("stroke", d3.rgb(200,200,200));
+//-------------------------------------------
 
- //  paths.selectAll("path")
- //    .on("mouseover", function(d, i) {
- //      d3.select(this)
- //        .style('fill', d3.rgb(31, 120, 180));
- //      svg.select('circle#point-'+i)
- //        .style('fill', d3.rgb(31, 120, 180))
- //    })
- //    .on("mouseout", function(d, i) {
- //      d3.select(this)
- //        .style("fill", d3.rgb(230, 230, 230));
- //      svg.select('circle#point-'+i)
- //        .style('fill', 'black')
- //    });
+	clips.selectAll("clipPath")
+		.data(vertices)
+		.enter()
+		.append("svg:clipPath")
+		.attr("id", function(d, i){return "clip-"+i;})
+		.append("svg:circle")
+		.attr('cx', function(d){return d[0];})
+		.attr('cy', function(d){return d[1];})
+		.attr('r', 900);
+
+  paths.selectAll("path")
+      .data(d3.geom.voronoi(vertices))
+    .enter().append("svg:path")
+      .attr("d", function(d) { return "M" + d.join(",") + "Z"; })
+      .attr("id", function(d,i) { 
+        return "path-"+i; })
+      .attr("clip-path", function(d,i) { return "url(#clip-"+i+")"; })
+      .style("fill", d3.rgb(230, 230, 230))
+      .style('fill-opacity', 0.4)
+      .style("stroke", d3.rgb(200,200,200));
+
+  paths.selectAll("path")
+    .on("mouseover", function(d, i) {
+      d3.select(this)
+        .style('fill', d3.rgb(31, 120, 180));
+      svg.select('circle#point-'+i)
+        .style('fill', d3.rgb(31, 120, 180))
+    })
+    .on("mouseout", function(d, i) {
+      d3.select(this)
+        .style("fill", d3.rgb(230, 230, 230));
+      svg.select('circle#point-'+i)
+        .style('fill', 'black')
+    });
 
 };
