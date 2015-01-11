@@ -1,6 +1,5 @@
 /****** GLOBAL VARIABLES *******/
 var width = 960, height = 460;
-var vertices = []
 
 /*---*******---END OF GLOBAL VARIABLES---*******---*/
 //--------------------------------------------------/
@@ -51,7 +50,7 @@ function setMap(){
 			.attr("class", "water")
 			.attr("d", path);		
 
-//		console.log(shops)
+		console.log(shops)
 
         shops = shops.filter(function(d){
         	if (d.count = shops.length){
@@ -66,7 +65,7 @@ function setMap(){
 
     	voronoi(shops)
        		 .forEach(function(d) { d.point.cell = d; });
-       		 
+
  		var shops = svg.append("g")
        	 .attr("class", "shops")
        	 .selectAll("g")
