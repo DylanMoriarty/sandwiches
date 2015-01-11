@@ -1,5 +1,5 @@
 /****** GLOBAL VARIABLES *******/
-var width = 960, height = 460;
+var mapWidth = 960, mapHeight = 460; //map frame dimension
 var vertices = []
 
 /*---*******---END OF GLOBAL VARIABLES---*******---*/
@@ -13,21 +13,17 @@ function initialize(){
 
 function setMap(){
 
+	var width = 960, height = 460;
+
 	var projection = d3.geo.albers()
-		.center([0, 43.0736])
-		.rotate([89.3988])
-		.parallels([50, 60])
-	    .scale(1800000)
-	    .translate([width / 2, height / 2])
+	   .center([0, 43.0736])
+	   .rotate([89.3988])
+	   .parallels([50, 60])
+   	   .scale(1800000)
+ 	   .translate([width / 2, height / 2])
 
 	var path = d3.geo.path()
 		.projection(projection);
-
-	var voronoi = d3.geom.voronoi()
-	    .x(function(d) { return d.x; })
-	    .y(function(d) { return d.y; })
-	    .clipExtent([[0, 0], [width, height]]);
-
 
 	var svg = d3.select("body").append("svg")
 		.attr("width", width)
@@ -35,12 +31,10 @@ function setMap(){
 
 	queue()
 		.defer(d3.json, "data/madison.json")
-		.defer(d3.csv, "data/sandwiches.csv")
+		.defer(d3.json, "data/sandwichshops.topojson")
 		.await(ready);
 
 	function ready(error, mad, shops){
-		var positions = [];
-
 		svg.append("path")
 			.datum(topojson.feature(mad, mad.objects.MadisonBuildings))
 			.attr("class", "buildings")
@@ -51,40 +45,33 @@ function setMap(){
 			.attr("class", "water")
 			.attr("d", path);		
 
-//		console.log(shops)
+		for (var i=0; i<shops.objects.collection.geometries.length; i++){
+			svg.insert("path", ".madshops")
+			.datum(topojson.feature(shops, shops.objects.collection.geometries[i]))
+			.attr("class", "shops")
+			.attr("d", path.pointRadius([2.5]))
+			.append("g");
 
-        shops = shops.filter(function(d){
-        	if (d.count = shops.length){
-		        d[0] = +d.longitude;
-		        d[1] = +d.latitude;
-		        var position = projection(d);
-		        d.x = position[0];
-		        d.y = position[1];
-		        return true;
-        	}
-        })
+			vertices[i] = shops.objects.collection.geometries[i].coordinates;
+		};
 
-    	voronoi(shops)
-       		 .forEach(function(d) { d.point.cell = d; });
-       		 
- 		var shops = svg.append("g")
-       	 .attr("class", "shops")
-       	 .selectAll("g")
-         .data(shops.sort(function(a, b) { return b.count - a.count; }))
-         .enter()
-         .append("g")
-         .attr("class", "shops")
+		svg.selectAll(".shops")
+			.on("mouseover", highlight)
+			.on("mouseout", dehighlight);
 
- 	   shops.append("path")
-	        .attr("class", "cell")
-	        .attr("d", function(d) { return d.cell.length ? "M" + d.cell.join("L") + "Z" : null; });
+		function highlight(){
+			d3.select(this)
+				.style("fill", "red")
+		}
 
-        console.log(shops)
+		function dehighlight(){
+			d3.select(this)
+				.style("fill", "black")
+		}
 
-        shops.append("circle")
-        	.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-	        .attr("r", 2.5);
+		console.log(shops)
 
+		GenerateVoronoi(shops)
 	};
 
 		// GenerateVonoroi(shops)
@@ -97,18 +84,6 @@ function GenerateVoronoi(shops){
 };
 
 // Utilities, working thoughts
-
-//For use with a Geojson point data...
-
-		// for (var i=0; i<shops.objects.collection.geometries.length; i++){
-		// 	svg.insert("path", ".madshops")
-		// 	.datum(topojson.feature(shops, shops.objects.collection.geometries[i]))
-		// 	.attr("class", "shops")
-		// 	.attr("d", path.pointRadius([2.5]))
-		// 	.append("g");
-
-		// 	vertices[i] = shops.objects.collection.geometries[i].coordinates;
-		// };
 
 //Shows that this code can indeed reprojcet these points if given a csv of same data...
 //=====================================================
