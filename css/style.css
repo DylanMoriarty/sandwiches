@@ -15,9 +15,17 @@
 }
 
 .buildings{
+	stroke: rgba(122,122,122,1);
+	stroke-width:0.25px;
 	fill: #dedede;
 }
 
 .shops{
 	fill: black;
 }
+
+.lines{
+	fill: none;
+	stroke: rgba(0, 0, 0, 0.3);
+	stroke-width: 1.5px;
+	}
